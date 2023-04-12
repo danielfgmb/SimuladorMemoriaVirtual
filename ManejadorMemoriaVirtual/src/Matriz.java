@@ -7,7 +7,7 @@ public class Matriz {
     public Fila[] filas;
 
     public static void setTamanoEntero(int pTamanoEntero){
-        Fila.setTamanoEntero(pTamanoEntero);
+        Entero.setTamanoEntero(pTamanoEntero);
     }
 
     public Matriz(int pNumeroFilas, int pNumeroColumnas) throws Exception{
@@ -30,11 +30,11 @@ public class Matriz {
         return res;
     }
 
-    public int get(int i, int j){
+    public long get(int i, int j){
         return filas[i].get(j);
     }
 
-    public void set(int i, int j, int valor){
+    public void set(int i, int j, long valor){
         filas[i].set(j,valor);
     }
 

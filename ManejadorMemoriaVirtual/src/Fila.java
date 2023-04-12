@@ -1,41 +1,37 @@
 public class Fila {
 
-    public static int tamanoEntero;
-
     public int numeroColumnas;
 
-    public int numeroPaginaReferencia;
-
-    public int desplazamientoReferencia;
-
-    public static void setTamanoEntero(int pTamanoEntero){
-        tamanoEntero = pTamanoEntero;
-    }
+    public Entero[] enteros;
 
     public Fila(int pNumeroColumnas) throws Exception{
+
         numeroColumnas = pNumeroColumnas;
-        int[] referencia = MemoriaVirtual.reservarMemoriaDiscoConsecutivamente(numeroColumnas*tamanoEntero);
-        numeroPaginaReferencia = referencia[0];
-        desplazamientoReferencia = referencia[1];
+
+        enteros = new Entero[numeroColumnas];
+
+        for(int i=0; i<numeroColumnas; i++){
+            enteros[i] = new Entero();
+        }
+        
     }
 
     public String darReferencias(String nombreMatriz, int fila){
         String res ="";
         for(int j=0; j<numeroColumnas; j++){
-            // es lo que se
-            res+="["+nombreMatriz+"-"+fila+"-"+j+"],"+numeroPaginaReferencia+","+(desplazamientoReferencia+j*tamanoEntero)+"\n";
+            res+=enteros[j].darReferencias(nombreMatriz, fila, j);
+            if(j<numeroColumnas)
+                res+="\n";
         }
         return res;
     }
 
-    public int get(int j){
-        int desplazamiento = desplazamientoReferencia + j * tamanoEntero;
-        return MemoriaVirtual.get(numeroPaginaReferencia,desplazamiento);
+    public long get(int j){
+        return enteros[j].get();
     }
 
-    public void set(int j, int valor){
-        int desplazamiento = desplazamientoReferencia + j * tamanoEntero;
-        MemoriaVirtual.set(numeroPaginaReferencia,desplazamiento,valor,tamanoEntero);
+    public void set(int j, long valor){
+        enteros[j].set(valor);
     }
 
 

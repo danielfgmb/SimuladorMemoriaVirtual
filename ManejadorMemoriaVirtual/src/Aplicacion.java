@@ -1,3 +1,13 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Year;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Aplicacion {
 
@@ -11,13 +21,17 @@ public class Aplicacion {
 
     public static int numeroColumnas;
 
+    public static String logFile="";
+
+    public static AlgoritmoEnvejecimiento algoritmo;
+
     public static void main(String[] args) throws Exception {
         inicio();
-        numeroFilas = 2;
-        numeroColumnas = 2;
+        numeroFilas = 4;
+        numeroColumnas = 4;
         int tamanoEntero = 4;
-        int tamanoPagina = 12;
-        int marcosPagina = 8;
+        int tamanoPagina = 8;
+        int marcosPagina = 16;
 
         MemoriaVirtual.inicializar(tamanoPagina, marcosPagina);
 
@@ -28,13 +42,14 @@ public class Aplicacion {
         C = new Matriz(numeroFilas, numeroColumnas);
 
         String imprimir = A.darReferencias("A")+B.darReferencias("B")+C.darReferencias("C");
-        System.out.print(imprimir+"xs");
+
+        System.out.print(imprimir+"\n");
         
-        AlgoritmoEnvejecimiento algotitmo = new AlgoritmoEnvejecimiento();
-        algotitmo.start();
+        algoritmo = new AlgoritmoEnvejecimiento();
+        algoritmo.start();
         recorrido1();
-        System.out.println("TERMINE");
-        System.out.println(MemoriaVirtual.cantidadFallosPagina);
+        Aplicacion.log("Termino thread principal");
+        Aplicacion.log("Fallos de página "+MemoriaVirtual.cantidadFallosPagina);
 
 
     }
@@ -42,15 +57,17 @@ public class Aplicacion {
     public static void recorrido1(){
         for(int i=0; i<numeroFilas; i++){
             for( int j=0; j<numeroColumnas; j++){
+                Aplicacion.log("Realizando Suma C["+i+","+j+"]=A+B");
+
                 C.set(i,j, A.get(i,j) + B.get(i,j));
+
                 try {
                     Thread.sleep(2);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
             }
         }
+        algoritmo.stopX();
     }
 
 
@@ -103,6 +120,53 @@ public class Aplicacion {
     {
         return str.replace('|', '\u2502');
     }
+
+    public static synchronized void log(String log){
+
+        
+        int year = Year.now().getValue();
+        Date date = new Date();   
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date); 
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int second = calendar.get(Calendar.SECOND);
+        int minute = calendar.get(Calendar.MINUTE);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);       
+        int month =calendar.get(Calendar.MONTH)+1;  
+        int milisecond = calendar.get(Calendar.MILLISECOND);
+        String prefix = year+"-"+month+"-"+day+"-"+hour+"-"+minute+"-"+second+"-"+milisecond;
+
+        if(logFile.equals("")){
+            try {
+                try{
+                    Files.createDirectories(Paths.get("Logs/"));
+                }
+                catch(Exception e){
+                    // si el directorio ya esta creado
+                }
+                
+                logFile = "Logs/"+prefix+"-log.txt"; 
+                File file = new File(logFile);
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            BufferedWriter output = new BufferedWriter(new FileWriter(logFile, true));
+            output.newLine();
+            String toLog = formatDiv("----------------------------------------------------")+"["+prefix+"]\n"+log;
+            String toLogW = "----------------------------------------------------"+"["+prefix+"]\n"+log;
+            output.write(toLogW);
+            System.out.println(toLog);
+            output.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 
 
 }
