@@ -284,5 +284,9 @@ public class MemoriaVirtual {
         }
     }
 
+    public int getTamanioPagina(){
+        return tablaPaginas.size();
+    }
+
     
 }
