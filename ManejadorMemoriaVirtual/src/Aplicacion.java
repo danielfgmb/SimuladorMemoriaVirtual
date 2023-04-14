@@ -38,9 +38,11 @@ public class Aplicacion {
         lecturaProcesoDos("procesoUno.txt", marcosPagina);
         algoritmo = new AlgoritmoEnvejecimiento();
         algoritmo.start();
+
         recorrido1();
         Aplicacion.log("Termino thread principal");
         Aplicacion.log("Fallos de página "+MemoriaVirtual.cantidadFallosPagina);
+        System.out.println("Fallos de página "+MemoriaVirtual.cantidadFallosPagina);
         
         
         
@@ -50,8 +52,6 @@ public class Aplicacion {
     private static void lecturaProcesoDos(String string, int marcos) throws Exception{
         File archivo = new File(string);
         int tamanoPagina = 0;
-        int numeroFilas = 0;
-        int numeroColumnas = 0;
         int numeroReferencias = 0;
         try (FileReader lector = new FileReader(archivo); BufferedReader br = new BufferedReader(lector);) {
             
@@ -71,19 +71,26 @@ public class Aplicacion {
             
             String[] referencias = new String[numeroReferencias];
             A = new Matriz();
-            for(int i=0; i<numeroReferencias/3; i++){
+            B = new Matriz();
+            C = new Matriz();
+            for(int i=0; i<numeroReferencias; i++){
                 referencias[i] = br.readLine();
-        
-                //A.cargarReferencia(referencias[i]);
+                String matriz = Character.toString(referencias[i].charAt(1));
+                int[] coordenadas = darCoordenadas(referencias[i]);
+                int filaR = coordenadas[0];
+                int columnaR = coordenadas[1];
+                int paginaR = coordenadas[2];
+                int desplazamientoR = coordenadas[3];
+                if(matriz.equals("A")){
+                    A.cargarReferencia(filaR, columnaR, paginaR, desplazamientoR);
+                }
+                else if(matriz.equals("B")){
+                    B.cargarReferencia(filaR, columnaR, paginaR, desplazamientoR);
+                }
+                else if(matriz.equals("C")){
+                    C.cargarReferencia(filaR, columnaR, paginaR, desplazamientoR);
+                }
             }
-            
-            if(referencias.length>3){
-                //int tamanioEntero = Integer.parseInt(referencias[3].split(",")[2]);
-                //Matriz.setTamanoEntero(tamanioEntero);
-            }
-            A = new Matriz(numeroFilas, numeroColumnas);
-            B = new Matriz(numeroFilas, numeroColumnas);
-            C = new Matriz(numeroFilas, numeroColumnas);
             
         }
         catch (IOException e) {
@@ -100,18 +107,23 @@ public class Aplicacion {
 			
 			String filasStr = br.readLine();
 			numeroFilas = Integer.parseInt(filasStr.substring(3));
+            System.out.println("Numero de filas: "+numeroFilas);
 			
 			String colsStr = br.readLine();
 			numeroColumnas = Integer.parseInt(colsStr.substring(3));
+            System.out.println("Numero de columnas: "+numeroColumnas);
 			
 			String bytesIntStr = br.readLine();
 			tamanoEntero = Integer.parseInt(bytesIntStr.substring(3));
+            System.out.println("Tamano de entero: "+tamanoEntero);
 			
 			String sizePagStr = br.readLine();
 			tamanoPagina = Integer.parseInt(sizePagStr.substring(3));
+            System.out.println("Tamano de pagina: "+tamanoPagina);
 			
 			String NumMarcosStr = br.readLine();
 			marcosPagina = Integer.parseInt(NumMarcosStr.substring(3));
+            System.out.println("Numero de marcos: "+marcosPagina);
 		}
         catch (IOException e) {
             e.printStackTrace();
@@ -216,7 +228,8 @@ public class Aplicacion {
 
     public static synchronized void log(String log){
 
-        
+        /*
+         * 
         int year = Year.now().getValue();
         Date date = new Date();   
         Calendar calendar = GregorianCalendar.getInstance();
@@ -244,7 +257,7 @@ public class Aplicacion {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+            }
 
         try {
             BufferedWriter output = new BufferedWriter(new FileWriter(logFile, true));
@@ -258,6 +271,8 @@ public class Aplicacion {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+         */
+        
     }
 
     public static String metodoCambiarString(String direccion){
@@ -307,6 +322,22 @@ public class Aplicacion {
         
 
     }
+    public static int[] darCoordenadas(String input)
+	{
+		int rta[]= new int[4];
+		String[] parts = input.split("-");
+        String[] partsDos = parts[2].split(",");
+        int fila=Integer.parseInt(parts[1]);
+        int columna = Integer.parseInt(partsDos[0].substring(0, partsDos[0].length() - 1));
+        int pagina = Integer.parseInt(partsDos[1]);
+        int despla = Integer.parseInt(partsDos[2]);
+        rta[0]=fila;
+        rta[1]=columna;
+        rta[2]=pagina;
+        rta[3]=despla;
+		return rta;
+		
+	}
 
 
 

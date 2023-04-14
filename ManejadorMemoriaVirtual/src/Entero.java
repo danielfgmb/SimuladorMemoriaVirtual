@@ -16,12 +16,19 @@ public class Entero {
         desplazamientoReferencia = referencia[1];
     }
 
+    public Entero(int numeroPagina,int  desplazamiento) throws Exception{
+        numeroPaginaReferencia = numeroPagina;
+        desplazamientoReferencia = desplazamiento;
+        MemoriaVirtual.checkPagina(numeroPaginaReferencia);
+
+    }
+
     public long get(){
-        return MemoriaVirtual.get(numeroPaginaReferencia,desplazamientoReferencia,tamanoEntero);
+        return MemoriaVirtual.get(numeroPaginaReferencia,desplazamientoReferencia);
     }
 
     public void set(long valor){
-        MemoriaVirtual.set(numeroPaginaReferencia,desplazamientoReferencia,valor,tamanoEntero);
+        MemoriaVirtual.set(numeroPaginaReferencia,desplazamientoReferencia,valor);
     }
 
     public String darReferencias(String nombreMatriz, int fila, int columna){

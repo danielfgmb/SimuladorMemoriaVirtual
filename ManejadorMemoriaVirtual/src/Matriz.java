@@ -21,13 +21,14 @@ public class Matriz {
 
         filas = new ArrayList<Fila>(numeroFilas);
         for(int i=0; i<numeroFilas; i++){
-            filas.set(i, new Fila(numeroColumnas));
+            filas.add(new Fila(numeroColumnas));
         }
     }
 
     public Matriz() throws Exception{
-        
+        filas = new ArrayList<Fila>();
     }
+    
 
     public String darReferencias(String nombreMatriz){
         String res="";
@@ -43,6 +44,15 @@ public class Matriz {
 
     public void set(int i, int j, long valor){
         filas.get(i).set(j,valor);
+    }
+
+    public void cargarReferencia(int filaR, int columnaR, int paginaR, int desplazamientoR) throws Exception{
+        if(filaR>=filas.size()){
+            for(int i=filas.size(); i<=filaR; i++){
+                filas.add(new Fila());
+            }
+        }
+        filas.get(filaR).cargarReferencia(columnaR, paginaR, desplazamientoR);
     }
 
 

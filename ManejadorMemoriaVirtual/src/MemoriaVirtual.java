@@ -35,6 +35,7 @@ public class MemoriaVirtual {
     public static int cantidadFallosPagina;
 
 
+
     public static void inicializar(int pTamanoPagina, int pNumeroMarcosPagina){
 
         // se establece dinámicamente al hacer las referencias, pero inicia en la cantidad de marcos que hay
@@ -153,13 +154,13 @@ public class MemoriaVirtual {
         return respuesta;
     }
 
-    public static long get(int pagina, int desplazamiento, int tamano){
+    public static long get(int pagina, int desplazamiento){
         try {
             Thread.sleep(2);
         } catch (InterruptedException e) {
         }
 
-        Aplicacion.log("Llamado GET a PG: "+pagina+" DESPLAZ:"+desplazamiento+" TAMANO:"+tamano );
+        Aplicacion.log("Llamado GET a PG: "+pagina+" DESPLAZ:"+desplazamiento);
 
         // hay fallo de pagina
         if(tablaPaginas.get(pagina)==-1){
@@ -177,7 +178,7 @@ public class MemoriaVirtual {
         return (long) (Math.random() *10) ;
     }
 
-    public static void set(int pagina, int desplazamiento, long valor, int tamano){
+    public static void set(int pagina, int desplazamiento, long valor){
         try {
             Thread.sleep(2);
         } catch (InterruptedException e) {
@@ -293,6 +294,14 @@ public class MemoriaVirtual {
 
     public int getTamanioPagina(){
         return tablaPaginas.size();
+    }
+
+    public static void checkPagina(int numeroPaginaReferencia) {
+        if(numeroPaginaReferencia>=tablaPaginas.size()){
+            for(int i = tablaPaginas.size(); i<=numeroPaginaReferencia; i++){
+                tablaPaginas.add(-1);
+            }
+        }
     }
 
     
