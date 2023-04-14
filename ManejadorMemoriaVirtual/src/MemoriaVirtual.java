@@ -154,6 +154,10 @@ public class MemoriaVirtual {
     }
 
     public static long get(int pagina, int desplazamiento, int tamano){
+        try {
+            Thread.sleep(2);
+        } catch (InterruptedException e) {
+        }
 
         Aplicacion.log("Llamado GET a PG: "+pagina+" DESPLAZ:"+desplazamiento+" TAMANO:"+tamano );
 
@@ -174,7 +178,10 @@ public class MemoriaVirtual {
     }
 
     public static void set(int pagina, int desplazamiento, long valor, int tamano){
-        
+        try {
+            Thread.sleep(2);
+        } catch (InterruptedException e) {
+        }
         if(tablaPaginas.get(pagina)==-1){
             cantidadFallosPagina++;
             colocarPaginaMemoria(pagina);
