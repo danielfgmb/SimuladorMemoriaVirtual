@@ -132,9 +132,7 @@ public class Aplicacion {
     private static void procesoDos(String nombreArchivo, int marcos) throws Exception{
 
         Aplicacion.log("Inicio PROCESO DOS", true);
-        Aplicacion.log("cPG:"+MemoriaVirtual.numeroPaginas+" "+MemoriaVirtual.tablaPaginas.size(), true);
         lecturaProcesoDos(nombreArchivo, numeroMarcos);
-        Aplicacion.log("cPG:"+MemoriaVirtual.numeroPaginas+" "+MemoriaVirtual.tablaPaginas.size(),true);
         algoritmo = new AlgoritmoEnvejecimiento();
         algoritmo.start();
 
@@ -297,10 +295,9 @@ public class Aplicacion {
         else if(seleccion.equals("3")){
             System.out.print(formatRow("| NOMBRE DE ARCHIVO DE REFERENCIAS (ProcesoUno):  "));
             archivoLecturaReferencias = sc.nextLine();
-            if(archivoEscritura1.equals("")){
-                archivoEscritura1 = "proceso1.txt";
+            if(archivoLecturaReferencias.equals("")){
+                archivoLecturaReferencias= "proceso1.txt";
             }
-            archivoLecturaReferencias = archivoEscritura1;
             System.out.print(formatDiv("d----------------------------------------------------------------f\n"));
             System.out.print(formatRow("| NÚMERO DE MARCOS:  "));
             numeroMarcos = Integer.parseInt(sc.nextLine());
@@ -309,9 +306,8 @@ public class Aplicacion {
         }
         System.out.print(formatDiv("d----------------------------------------------------------------f\n"));
         System.out.print(formatRow("| Los logs se imprimen en consola y se guardan en la capeta Logs |\n"));
-        System.out.print(formatRow("| Debido a la cantidad de mensajes pudiera afectar el tiempo de  |\n"));
-        System.out.print(formatRow("| los ciclos de reloj y afectar en el número de fallos de pág    |\n"));
-        System.out.print(formatRow("| pero muestran detalladamente el proceso de reemplazo           |\n"));
+        System.out.print(formatRow("| debido a la cantidad de mensajes pudiera afectar el tiempo de  |\n"));
+        System.out.print(formatRow("| los ciclos de reloj                                            |\n"));
         System.out.print(formatRow("| ¿DESEA ACTIVAR LOG? (S/N):  "));
         activarLog = sc.nextLine();
 

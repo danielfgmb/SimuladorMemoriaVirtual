@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class MemoriaVirtual {
 
-    public static ArrayList<Integer> tablaPaginas; // sensible a cambio
+    public static ArrayList<Integer> tablaPaginas = new ArrayList<>(); // sensible a cambio
 
     public static ArrayList<Integer> tablaMarcos; // sensible a cambio
 
@@ -12,7 +12,7 @@ public class MemoriaVirtual {
 
     public static int numeroMarcosPagina;
 
-    public static int numeroPaginas; // sensible a est
+    public static int numeroPaginas=0; // sensible a est
 
     // indica hasta qye byte está ocupado cada pagina
     // esto significa que aunque en memoria todo cambie lo que nunca cambia es como la pagina en el interior por eso solo necesitamos
