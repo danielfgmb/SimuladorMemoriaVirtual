@@ -14,7 +14,6 @@ public class MemoriaVirtual {
 
     public static int numeroPaginas; // sensible a est
 
-    // no supe como llamarle pero es para aprovechar el tamano de las páginas al máximo
     // indica hasta qye byte está ocupado cada pagina
     // esto significa que aunque en memoria todo cambie lo que nunca cambia es como la pagina en el interior por eso solo necesitamos
     // la info de hasta que byte esta ocupado
@@ -26,13 +25,14 @@ public class MemoriaVirtual {
     // bitsR para algoritmo de envejecimiento
     public static ArrayList<Boolean> bitsR; // sensible a cambios
 
-
     // valores para hacer rapido la asignacion de memoria
     public static int ultimaPagina;
     // inicia en 0 así que para compara con tamaños toca +1, el anterior igual
     public static int ultimoDesplazamiento;
 
-    public static int cantidadFallosPagina;
+    // variable final en donde se guarda el numero de fallos de página por ejecución
+    public static int cantidadFallosPagina=0;
+
 
 
 
@@ -45,18 +45,11 @@ public class MemoriaVirtual {
 
         ultimoDesplazamiento = -1;
 
-        // al principio no hay 
-        //numeroPaginasDisco = 0;
-
         numeroMarcosPagina = pNumeroMarcosPagina;
 
         marcosOcupados = new boolean[numeroMarcosPagina];
 
         tamanoPagina = pTamanoPagina;
-
-        //memoriaReal = new ArrayList<>();
-
-        //memoriaDisco = new ArrayList<>();
 
         paginaByteOcupado = new ArrayList<>();
 
@@ -68,12 +61,7 @@ public class MemoriaVirtual {
 
         tablaMarcos = new ArrayList<>();
 
-        //paginasMemoria = new ArrayList<>();
-
         for(int i = 0; i<numeroMarcosPagina; i++){
-
-            // tamaño de la memoria real reservado
-            //memoriaReal.add(new byte[tamanoPagina]);
 
             // al principio es -1 porque no hay lleno nada
             paginaByteOcupado.add(-1);
@@ -87,9 +75,6 @@ public class MemoriaVirtual {
             tablaPaginas.add(-1);
 
             tablaMarcos.add(-1);
-
-            //paginasMemoria.add(false);
-
         }
 
     }
@@ -106,83 +91,74 @@ public class MemoriaVirtual {
 
         int[] respuesta = new int[2];
 
-        System.out.println("----------");
-        System.out.println("ultPagPrev "+ultimaPagina+"ultimoDesplaPrev "+ultimoDesplazamiento);
-
         // lo puedo colocar en la ultima pagina llenada 
         // se le suma el 1 porque comparamos en tamanos y por eso tambien el <=
-        System.out.println("cond1 "+(tamanoBytes + (ultimoDesplazamiento + 1))+" <= "+tamanoPagina);
         if(tamanoBytes + (ultimoDesplazamiento + 1) <= tamanoPagina){
-            System.out.println("entre caso 1");
             // se le dice que hasta ahí esta ocupada esa pagina
             // si el último desplzamiento es 0 quiere decir que la posición ocupada es 0 por eso no hay que restar 1
             respuesta[0] = ultimaPagina;
             respuesta[1] = ultimoDesplazamiento+1;
             ultimoDesplazamiento = paginaByteOcupado.get(ultimaPagina) + tamanoBytes;
-            paginaByteOcupado.set(ultimaPagina, ultimoDesplazamiento);   
-            
-               
+            paginaByteOcupado.set(ultimaPagina, ultimoDesplazamiento); 
         }
         else{
             
             // primer caso, con las paginas que tengo es suficiente
             if(ultimaPagina+1<numeroPaginas){
-                System.out.println("entre caso 2");
                 ultimaPagina +=1;
-                
-               
                 ultimoDesplazamiento = tamanoBytes-1;
                 paginaByteOcupado.set(ultimaPagina, ultimoDesplazamiento);
             }
             // segundo caso, no alcanza y me toca hacer una página nueva, más peasado de todos
             else{
-                System.out.println("entre caso 3");
                 ultimoDesplazamiento = tamanoBytes-1;
                 ultimaPagina+=1;
                 paginaByteOcupado.add(ultimoDesplazamiento);
                 tablaPaginas.add(-1);
-                numeroPaginas+=1;
-
-                
+                numeroPaginas+=1;                
             }
             respuesta[0] = ultimaPagina;
             respuesta[1] = 0;
         }
-        System.out.println("ultPag "+ultimaPagina+"ultimoDespla "+ultimoDesplazamiento);
-        System.out.println("resp0 "+respuesta[0]+"resp1 "+respuesta[1]);
-
         return respuesta;
     }
 
     public static long get(int pagina, int desplazamiento){
+
         try {
             Thread.sleep(2);
         } catch (InterruptedException e) {
         }
 
-        Aplicacion.log("Llamado GET a PG: "+pagina+" DESPLAZ:"+desplazamiento);
+        
+        Aplicacion.log("Llamado GET a PG: "+pagina+" DESPLAZ:"+desplazamiento,false);
 
         // hay fallo de pagina
         if(tablaPaginas.get(pagina)==-1){
             cantidadFallosPagina++;
-            Aplicacion.log("Fallo de página! " );
-
+            Aplicacion.log("Fallo de página! ",false);
             colocarPaginaMemoria(pagina);
-            
         }
 
         // se cambian los bit de referencias
         // lo hago despues por que si hubo un fallo de pagina no se podría colocar el bitR para el marco
         reportarAccesoRBits(pagina);
+
+        
 
         return (long) (Math.random() *10) ;
     }
 
     public static void set(int pagina, int desplazamiento, long valor){
+
+        Aplicacion.log("Llamado GET a PG: "+pagina+" DESPLAZ:"+desplazamiento,false);
+
         try {
             Thread.sleep(2);
         } catch (InterruptedException e) {
         }
+    
+
         if(tablaPaginas.get(pagina)==-1){
             cantidadFallosPagina++;
             colocarPaginaMemoria(pagina);
@@ -192,6 +168,7 @@ public class MemoriaVirtual {
         // lo hago despues por que si hubo un fallo de pagina no se podría colocar el bitR para el marco
         reportarAccesoRBits(pagina);
 
+       
     }
 
     // es sincronizado por contadoresPaginas que lo accede tanto el algoritmo como aca
@@ -237,12 +214,9 @@ public class MemoriaVirtual {
                         numeroPaginaCandidata = i;
                     }
                 }
-
-
             }
 
             log+=">>> El marco idóneo es el "+indice+" con contador "+min+"\n";
-
 
             // aqui ya tenemos el idoneo, hacemos el cambio
             // 0. encontramos el marco en donde esta la pagina candidata
@@ -257,7 +231,7 @@ public class MemoriaVirtual {
             contadoresMarco.set(marcoDisponible, (byte) 0);
         }
 
-        Aplicacion.log(log);
+        Aplicacion.log(log,false);
     }
 
     public static synchronized void reportarAccesoRBits(int pagina){
@@ -265,14 +239,12 @@ public class MemoriaVirtual {
 
         String log = "Actualizando bitR PG: "+pagina+" MC: "+marco+"\n>>> bitsR Antes: "+estadoRBits()+"\n";
         
-        
         if(marco != -1){
             bitsR.set(marco, true);
         }
         
         log+=">>> bitsR despues: "+estadoRBits();
-        Aplicacion.log(log);
-        
+        Aplicacion.log(log,false);
     }
 
     public static synchronized String estadoRBits(){
@@ -297,6 +269,9 @@ public class MemoriaVirtual {
     }
 
     public static void checkPagina(int numeroPaginaReferencia) {
+        if(numeroPaginaReferencia>=numeroPaginas){
+            numeroPaginas=numeroPaginaReferencia+1;
+        }
         if(numeroPaginaReferencia>=tablaPaginas.size()){
             for(int i = tablaPaginas.size(); i<=numeroPaginaReferencia; i++){
                 tablaPaginas.add(-1);

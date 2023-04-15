@@ -43,7 +43,7 @@ public class AlgoritmoEnvejecimiento extends Thread{
                     
 
                 }
-                Aplicacion.log(log);
+                Aplicacion.log(log,false);
                     
 
                 MemoriaVirtual.reiniciarRBits();
@@ -59,6 +59,9 @@ public class AlgoritmoEnvejecimiento extends Thread{
 
             
 
+        }
+        if(!correr){
+            Aplicacion.log("Termino algoritmo envejecimiento ", true);
         }
     }
 

@@ -8,12 +8,16 @@ public class Matriz {
 
     public ArrayList<Fila> filas;
 
+    public String id;
+
 
     public static void setTamanoEntero(int pTamanoEntero){
         Entero.setTamanoEntero(pTamanoEntero);
     }
 
-    public Matriz(int pNumeroFilas, int pNumeroColumnas) throws Exception{
+    public Matriz(int pNumeroFilas, int pNumeroColumnas, String pId) throws Exception{
+
+        Aplicacion.log("Asignando Matriz "+pId,false);
 
         numeroColumnas = pNumeroColumnas;
 
@@ -21,21 +25,16 @@ public class Matriz {
 
         filas = new ArrayList<Fila>(numeroFilas);
         for(int i=0; i<numeroFilas; i++){
+            Aplicacion.log("> Asignando Fila "+i,false);
             filas.add(new Fila(numeroColumnas));
         }
+
+        id = pId;
     }
 
-    public Matriz() throws Exception{
+    public Matriz(String pId) throws Exception{
         filas = new ArrayList<Fila>();
-    }
-    
-
-    public String darReferencias(String nombreMatriz){
-        String res="";
-        for(int i = 0; i<numeroFilas; i++){
-            res+= filas.get(i).darReferencias(nombreMatriz, i);
-        }
-        return res;
+        id = pId;
     }
 
     public long get(int i, int j){

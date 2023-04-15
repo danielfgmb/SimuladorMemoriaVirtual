@@ -13,6 +13,7 @@ public class Fila {
         enteros = new ArrayList<Entero>(numeroColumnas);
 
         for(int i=0; i<numeroColumnas; i++){
+            Aplicacion.log(" > Asignando Entero/Columna "+i,false);
             enteros.add(new Entero());
         }
         
@@ -20,16 +21,6 @@ public class Fila {
 
     public Fila() throws Exception{
         enteros = new ArrayList<Entero>();
-    }
-
-    public String darReferencias(String nombreMatriz, int fila){
-        String res ="";
-        for(int j=0; j<numeroColumnas; j++){
-            res+=enteros.get(j).darReferencias(nombreMatriz, fila, j);
-            if(j<numeroColumnas)
-                res+="\n";
-        }
-        return res;
     }
 
     public long get(int j){
